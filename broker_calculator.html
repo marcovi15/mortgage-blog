@@ -9,7 +9,7 @@
         <h1>Mortgage Calculator</h1>
         <nav>
             <a href="index.html">Home</a> |
-            <a href="calculator.html">Calculator</a>
+            <a href="broker_calculator.html">Calculator</a>
         </nav>
     </header>
 
@@ -19,13 +19,13 @@
           <div>
             <!-- Column 1 -->
             <label>🏠 Home Price (£):
-              <input type="number" step="0.01" id="home_price" value="300000.00">
+              <input type="number" step="1000" id="home_price" value="300000.00">
             </label>
             <label>💰 Deposit (£):
               <input type="number" step="0.01" id="deposit" value="30000.00">
             </label>
             <label>⏳ Mortgage Duration (years):
-              <input type="number" id="duration" value="20">
+              <input type="number" id="duration" step="1" value="20">
             </label>
           </div>
           <div>
@@ -34,7 +34,7 @@
               <input type="number" step="0.01" id="baseline_rate" value="4.2">
             </label>
             <label>📅 Fixed Term (years):
-              <input type="number" id="fixed_term" value="3">
+              <input type="number" id="fixed_term" step="1" value="3">
             </label>
             <label>💸 Broker's Fee (£):
               <input type="number" step="0.01" id="broker_fee" value="500.00">
@@ -47,7 +47,7 @@
       </div>
     </main>
 
-    <script src="js/calculator.js"></script>
+    <script src="js/broker_calculator.js"></script>
 
 </body>
 </html>
