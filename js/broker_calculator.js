@@ -75,13 +75,25 @@ function calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears
 
 // Event listener
 calculateButton.addEventListener('click', () => {
-    const home_price = parseFloat(homePriceInput.value);
+    const homePrice = parseFloat(homePriceInput.value);
     const deposit = parseFloat(depositInput.value);
-    const duration = parseInt(durationInput.value);
-    const interest = parseFloat(interestInput.value);
-    const fixedTerm = parseInt(fixedTermInput.value);
+    const durationYears = parseInt(durationInput.value);
+    const baselineRate = parseFloat(interestInput.value);
+    const targetTermYears = parseInt(fixedTermInput.value);
     const brokerFee = parseFloat(brokerFeeInput.value);
 
-    rateWithBroker = calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears, baselineIntRatePerc)
-    resultDiv.innerHTML = `The broker should get you an interest rate of ${rateWithBroker.toFixed(2)}%`;
+    const loan = homePrice - deposit;
+
+    try {
+        const rateWithBroker = calculateRateWithBroker(
+            brokerFee,
+            loan,
+            durationYears,
+            targetTermYears,
+            baselineRate
+        );
+        resultDiv.innerHTML = `The broker must secure a rate ≤ <b>${rateWithBroker.toFixed(2)}%</b> to be worth the fee.`;
+    } catch (e) {
+        resultDiv.innerHTML = `<span style="color:red;">Error: ${e.message}</span>`;
+    }
 });
