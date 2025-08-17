@@ -1,31 +1,155 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mortgage Blog</title>
+  <title>Mortgage Broker Calculator</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
-    h1 { color: #2E86C1; }
-    iframe { border: 2px solid #2E86C1; width: 100%; height: 600px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h1 {
+      color: #1f2937;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 0.75rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .result {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #065f46;
+    }
   </style>
 </head>
 <body>
-  <h1>Is a mortgage broker worth it? 🏠</h1>
-  <p>Use our calculator to see what interest rate a broker needs to get you to justify their fee.</p>
+  <h1>Is a Mortgage Broker Worth It?</h1>
+  <p>Enter your details below to see what interest rate a broker needs to secure to justify their fee.</p>
 
-  <!-- Streamlit app -->
-  <a href="https://<https://mortgage-calc.streamlit.app/>" target="_blank" style="
-    display:inline-block;
-    background:#2E86C1;
-    color:white;
-    padding:12px 24px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:bold;">
-    👉 Try the Mortgage Calculator
-  </a>
+  <div class="card">
+    <label>Loan Amount (£):
+      <input type="number" id="loan" value="137000">
+    </label>
+    <label>Mortgage Duration (years):
+      <input type="number" id="duration" value="20">
+    </label>
+    <label>Baseline Interest Rate (%):
+      <input type="number" step="0.01" id="baselineRate" value="4.2">
+    </label>
+    <label>Fixed Term (years):
+      <input type="number" id="term" value="3">
+    </label>
+    <label>Broker Fee (£):
+      <input type="number" id="brokerFee" value="500">
+    </label>
+    <button onclick="runCalculation()">Calculate</button>
+    <div id="output" class="result"></div>
+  </div>
 
+<script>
+// === FUNCTIONS FROM PYTHON TRANSLATION ===
+
+function calculateMonthlyPayment(loan, durationYears, intRatePerc) {
+    const durationMonths = durationYears * 12;
+    const rFactor = 1 + (intRatePerc / 100 / 12);
+    const factorOne = loan * Math.pow(rFactor, durationMonths);
+    const factorTwo = Math.pow(rFactor, durationMonths) - 1;
+    return (factorOne / factorTwo) * (rFactor - 1);
+}
+
+function calculateInterestPaid(loan, intRatePerc, monthlyPay, targetTermYears) {
+    const targetTermMonths = targetTermYears * 12;
+    const intRateMonth = intRatePerc / 100 / 12;
+    const grossInterest = (loan * intRateMonth) - monthlyPay;
+    const compoundFactor = (Math.pow(1 + intRateMonth, targetTermMonths) - 1) / intRateMonth;
+    const paidInTerm = monthlyPay * targetTermMonths;
+    return grossInterest * compoundFactor + paidInTerm;
+}
+
+function createWrapperForInterestCalc(loan, monthlyPay, targetTermYears) {
+    return function(intRate) {
+        return calculateInterestPaid(loan, intRate, monthlyPay, targetTermYears);
+    }
+}
+
+function solveByInterestPaid(interestFunc, interestTarget,
+                             rLow=0.01, rHigh=10,
+                             tolF=1e-9, tolR=1e-12, maxIter=200) {
+    function evalError(r) { return interestFunc(r) - interestTarget; }
+    let fLow = evalError(rLow);
+    let fHigh = evalError(rHigh);
+
+    while (fLow * fHigh > 0 && rHigh < 10) {
+        rHigh *= 2;
+        fHigh = evalError(rHigh);
+    }
+    if (fLow * fHigh > 0) throw new Error("Could not bracket a root.");
+
+    for (let i = 0; i < maxIter; i++) {
+        const mid = 0.5 * (rLow + rHigh);
+        const fMid = evalError(mid);
+        if (Math.abs(fMid) < tolF || (rHigh - rLow) < tolR) return mid;
+        if (fLow * fMid <= 0) { rHigh = mid; fHigh = fMid; }
+        else { rLow = mid; fLow = fMid; }
+    }
+    return 0.5 * (rLow + rHigh);
+}
+
+function calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears, baselineIntRatePerc) {
+    const monthlyPay = calculateMonthlyPayment(loan, durationYears, baselineIntRatePerc);
+    const interestPaidWithoutBroker = calculateInterestPaid(loan, baselineIntRatePerc, monthlyPay, targetTermYears);
+    const interestPaidWithBroker = interestPaidWithoutBroker - brokerFee;
+    const fixedIntFunction = createWrapperForInterestCalc(loan, monthlyPay, targetTermYears);
+    return solveByInterestPaid(fixedIntFunction, interestPaidWithBroker);
+}
+
+// === RUN CALCULATION ON BUTTON CLICK ===
+function runCalculation() {
+  const loan = parseFloat(document.getElementById("loan").value);
+  const duration = parseFloat(document.getElementById("duration").value);
+  const baselineRate = parseFloat(document.getElementById("baselineRate").value);
+  const term = parseFloat(document.getElementById("term").value);
+  const brokerFee = parseFloat(document.getElementById("brokerFee").value);
+
+  try {
+    const result = calculateRateWithBroker(brokerFee, loan, duration, term, baselineRate);
+    document.getElementById("output").innerHTML =
+      `The broker must secure a rate ≤ <b>${result.toFixed(3)}%</b> to be worth the fee.`;
+  } catch (e) {
+    document.getElementById("output").innerHTML = `<span style="color:red;">Error: ${e.message}</span>`;
+  }
+}
+</script>
 </body>
 </html>
