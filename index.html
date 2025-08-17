@@ -39,7 +39,10 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
+      gap: 2rem; /* increase gap from 1rem to 2rem */
+    }
+    .grid > div {
+      padding: 0.5rem; /* adds a little breathing room inside each column */
     }
 
     /* === LABELS & INPUTS === */
