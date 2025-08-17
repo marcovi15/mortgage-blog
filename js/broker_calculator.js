@@ -5,6 +5,18 @@ const currencyFormatter = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 0
 });
 
+// Select input elements
+const homePriceInput = document.getElementById('home_price');
+const depositInput = document.getElementById('deposit');
+const durationInput = document.getElementById('duration');
+const interestInput = document.getElementById('interest');
+const fixedTermInput = document.getElementById('fixed-term');
+const brokerFeeInput = document.getElementById('broker-fee');
+
+const calculateButton = document.getElementById('calculate-btn');
+const resultDiv = document.getElementById('result');
+
+
 // === FUNCTIONS FROM PYTHON TRANSLATION ===
 
 function calculateMonthlyPayment(loan, durationYears, intRatePerc) {
@@ -61,16 +73,6 @@ function calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears
     return solveByInterestPaid(fixedIntFunction, interestPaidWithBroker);
 }
 
-// === RUN CALCULATION ON BUTTON CLICK ===
-function runCalculation() {
-  const home_price = parseFloat(document.getElementById("home_price").value);
-  const deposit = parseFloat(document.getElementById("deposit").value);
-  const duration = parseFloat(document.getElementById("duration").value);
-  const baselineRate = parseFloat(document.getElementById("baselineRate").value);
-  const term = parseFloat(document.getElementById("term").value);
-  const brokerFee = parseFloat(document.getElementById("brokerFee").value);
-  const loan = home_price - deposit;
-
   try {
     const result = calculateRateWithBroker(brokerFee, loan, duration, term, baselineRate);
     document.getElementById("output").innerHTML =
@@ -79,3 +81,16 @@ function runCalculation() {
     document.getElementById("output").innerHTML = `<span style="color:red;">Error: ${e.message}</span>`;
   }
 }
+
+// Event listener
+calculateButton.addEventListener('click', () => {
+    const home_price = parseFloat(loanInput.value);
+    const deposit = parseFloat(depositInput.value);
+    const duration = parseInt(durationInput.value);
+    const interest = parseFloat(interestInput.value);
+    const fixedTerm = parseInt(fixedTermInput.value);
+    const brokerFee = parseFloat(brokerFeeInput.value);
+
+    const monthlyPayment = calculateMonthlyPayment(home_price - deposit, duration, interest);
+    resultDiv.innerHTML = `💰 Monthly payment: £${monthlyPayment.toFixed(2)}`;
+});
