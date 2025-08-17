@@ -9,9 +9,9 @@ const currencyFormatter = new Intl.NumberFormat("en-GB", {
 const homePriceInput = document.getElementById('home_price');
 const depositInput = document.getElementById('deposit');
 const durationInput = document.getElementById('duration');
-const interestInput = document.getElementById('interest');
-const fixedTermInput = document.getElementById('fixed-term');
-const brokerFeeInput = document.getElementById('broker-fee');
+const interestInput = document.getElementById('baseline_rate');
+const fixedTermInput = document.getElementById('fixed_term');
+const brokerFeeInput = document.getElementById('broker_fee');
 
 const calculateButton = document.getElementById('calculate-btn');
 const resultDiv = document.getElementById('result');
@@ -91,6 +91,6 @@ calculateButton.addEventListener('click', () => {
     const fixedTerm = parseInt(fixedTermInput.value);
     const brokerFee = parseFloat(brokerFeeInput.value);
 
-    const monthlyPayment = calculateMonthlyPayment(home_price - deposit, duration, interest);
-    resultDiv.innerHTML = `💰 Monthly payment: £${monthlyPayment.toFixed(2)}`;
+    rateWithBroker = calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears, baselineIntRatePerc)
+    resultDiv.innerHTML = `The broker should get you an interest rate of ${rateWithBroker.toFixed(2)}%`;
 });
