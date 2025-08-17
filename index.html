@@ -58,8 +58,11 @@
   <p>Enter your details below to see what interest rate a broker needs to secure to justify their fee.</p>
 
   <div class="card">
-    <label>Loan Amount (£):
-      <input type="number" id="loan" value="137000">
+    <label>Home Price (£):
+      <input type="number" step="0.01" id="home_price" value="300000.00">
+    </label>
+    <label>Deposit (£):
+      <input type="number" step="0.01" id="deposit" value="30000.00">
     </label>
     <label>Mortgage Duration (years):
       <input type="number" id="duration" value="20">
@@ -70,8 +73,8 @@
     <label>Fixed Term (years):
       <input type="number" id="term" value="3">
     </label>
-    <label>Broker Fee (£):
-      <input type="number" id="brokerFee" value="500">
+    <label>Broker's Fee (£):
+      <input type="number" step="0.01" id="brokerFee" value="500.00">
     </label>
     <button onclick="runCalculation()">Calculate</button>
     <div id="output" class="result"></div>
@@ -136,16 +139,18 @@ function calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears
 
 // === RUN CALCULATION ON BUTTON CLICK ===
 function runCalculation() {
-  const loan = parseFloat(document.getElementById("loan").value);
+  const home_price = parseFloat(document.getElementById("home_price").value);
+  const deposit = parseFloat(document.getElementById("deposit").value);
   const duration = parseFloat(document.getElementById("duration").value);
   const baselineRate = parseFloat(document.getElementById("baselineRate").value);
   const term = parseFloat(document.getElementById("term").value);
   const brokerFee = parseFloat(document.getElementById("brokerFee").value);
+  const loan = home_price - deposit;
 
   try {
     const result = calculateRateWithBroker(brokerFee, loan, duration, term, baselineRate);
     document.getElementById("output").innerHTML =
-      `The broker must secure a rate ≤ <b>${result.toFixed(3)}%</b> to be worth the fee.`;
+      `The broker must secure a rate ≤ <b>${result.toFixed(2)}%</b> to be worth the fee.`;
   } catch (e) {
     document.getElementById("output").innerHTML = `<span style="color:red;">Error: ${e.message}</span>`;
   }
