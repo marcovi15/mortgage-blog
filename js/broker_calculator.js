@@ -73,18 +73,9 @@ function calculateRateWithBroker(brokerFee, loan, durationYears, targetTermYears
     return solveByInterestPaid(fixedIntFunction, interestPaidWithBroker);
 }
 
-  try {
-    const result = calculateRateWithBroker(brokerFee, loan, duration, term, baselineRate);
-    document.getElementById("output").innerHTML =
-      `The broker must secure a rate ≤ <b>${result.toFixed(2)}%</b> to be worth the fee.`;
-  } catch (e) {
-    document.getElementById("output").innerHTML = `<span style="color:red;">Error: ${e.message}</span>`;
-  }
-}
-
 // Event listener
 calculateButton.addEventListener('click', () => {
-    const home_price = parseFloat(loanInput.value);
+    const home_price = parseFloat(homePriceInput.value);
     const deposit = parseFloat(depositInput.value);
     const duration = parseInt(durationInput.value);
     const interest = parseFloat(interestInput.value);
