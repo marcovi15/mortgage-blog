@@ -14,7 +14,7 @@ const fixedTermInput = document.getElementById('fixed_term');
 const brokerFeeInput = document.getElementById('broker_fee');
 
 const calculateButton = document.getElementById('calculate-btn');
-const resultDiv = document.getElementById('result');
+const resultDiv = document.getElementById('output');
 
 
 // === FUNCTIONS FROM PYTHON TRANSLATION ===
