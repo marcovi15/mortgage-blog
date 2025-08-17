@@ -4,52 +4,94 @@
   <meta charset="UTF-8">
   <title>Mortgage Broker Calculator</title>
   <style>
+    /* === GENERAL THEME === */
     body {
-      font-family: Arial, sans-serif;
-      background: #f9fafb;
-      color: #111827;
-      max-width: 700px;
+      font-family: "Helvetica", "Arial", sans-serif; /* sans serif */
+      background-color: #121212;                     /* dark gray */
+      color: #E0E0E0;                                /* light gray text */
+      max-width: 800px;
       margin: 2rem auto;
       padding: 1rem;
     }
+
     h1 {
-      color: #1f2937;
-    }
-    .card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      color: #3498DB; /* primary blue accent */
+      text-align: center;
       margin-bottom: 1rem;
     }
+
+    p {
+      color: #E0E0E0;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    /* === CARD / PANEL === */
+    .card {
+      background-color: #1E1E1E; /* secondary background */
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      margin-bottom: 1rem;
+    }
+
+    /* === GRID LAYOUT === */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    /* === LABELS & INPUTS === */
     label {
       display: block;
-      margin-top: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #E0E0E0;
     }
-    input {
+
+    input[type="number"] {
       width: 100%;
       padding: 0.5rem;
-      margin-top: 0.25rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid #3498DB;  /* primary accent border */
       border-radius: 8px;
+      margin-bottom: 1rem;
+      background-color: #121212;
+      color: #E0E0E0;
     }
+
+    input[type="number"]::placeholder {
+      color: #AAAAAA;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #1abc9c; /* optional highlight on focus */
+      box-shadow: 0 0 5px #1abc9c;
+    }
+
+    /* === BUTTON === */
     button {
-      background: #2563eb;
-      color: white;
+      background-color: #3498DB;  /* primary color */
+      color: #E0E0E0;
       padding: 0.75rem 1.25rem;
       border: none;
       border-radius: 8px;
-      margin-top: 1rem;
       cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
     }
+
     button:hover {
-      background: #1d4ed8;
+      background-color: #1D6FA5;
     }
+
+    /* === RESULT DISPLAY === */
     .result {
       margin-top: 1rem;
       font-size: 1.2rem;
       font-weight: bold;
-      color: #065f46;
+      color: #1abc9c;  /* subtle green accent for results */
     }
   </style>
 </head>
