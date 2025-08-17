@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mortgage Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Mortgage Calculator</h1>
+        <nav>
+            <a href="index.html">Home</a> |
+            <a href="calculator.html">Calculator</a>
+        </nav>
+    </header>
+
+    <main>
+      <div class="card">
+        <div class="grid">
+          <div>
+            <!-- Column 1 -->
+            <label>🏠 Home Price (£):
+              <input type="number" step="0.01" id="home_price" value="300000.00">
+            </label>
+            <label>💰 Deposit (£):
+              <input type="number" step="0.01" id="deposit" value="30000.00">
+            </label>
+            <label>⏳ Mortgage Duration (years):
+              <input type="number" id="duration" value="20">
+            </label>
+          </div>
+          <div>
+            <!-- Column 2 -->
+            <label>📈 Baseline Interest Rate (%):
+              <input type="number" step="0.01" id="baselineRate" value="4.2">
+            </label>
+            <label>📅 Fixed Term (years):
+              <input type="number" id="term" value="3">
+            </label>
+            <label>💸 Broker's Fee (£):
+              <input type="number" step="0.01" id="brokerFee" value="500.00">
+            </label>
+          </div>
+        </div>
+
+        <button onclick="runCalculation()">Calculate</button>
+        <div id="output" class="result"></div>
+      </div>
+    </main>
+
+    <script src="js/calculator.js"></script>
+
+</body>
+</html>
